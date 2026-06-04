@@ -1,0 +1,120 @@
+# StudyBuddy — Smart Study Companion
+
+A full-stack AI-assisted study app. Students upload lecture notes, PDFs, or
+slides; StudyBuddy turns them into **summaries**, **flashcards** with
+spaced-repetition scheduling, **multiple-choice quizzes**, and visual
+**progress analytics**. The backend is FastAPI + Postgres; the frontend is
+React (Vite). AI generation is powered by Anthropic's Claude API with prompt
+caching to keep latency and cost down.
+
+## Demo
+
+![StudyBuddy demo](demo.gif)
+
+
+---
+
+## At a glance
+
+| Layer    |                Stack                   |
+|----------|----------------------------------------|
+| Frontend | React 18 · Vite · React Router · Axios |
+| Backend  | FastAPI · SQLAlchemy 2 · Pydantic v2 · python-jose · passlib (bcrypt) |
+| Database | PostgreSQL |
+| AI       | Anthropic Claude (Sonnet / Opus / Haiku) via the official SDK |
+| Auth     | Email + password · JWT access tokens · email verification · password reset |
+
+## Features
+
+**Core**
+- Sign up, sign in, password reset, email verification (JWT-based).
+- CRUD for user account credentials, notes, decks, flashcards, quizzes.
+- Upload notes as PDF, DOCX, TXT, or Markdown — text is extracted server-side.
+- AI-generated summaries (with key points), flashcards, and quizzes.
+- Spaced repetition (SM-2) scheduling for flashcards.
+- Quiz attempts persisted with per-question correctness + scores.
+- Study sessions tracked: minutes, items reviewed, accuracy.
+- Analytics dashboard: streak, daily minutes, daily review accuracy, due cards.
+
+**Bonus**
+- AI-extracted **highlights** (rendered inline over the note content with importance-based colour coding).
+- AI-extracted **keywords** with definitions.
+
+**Security**
+- bcrypt-hashed passwords (passlib).
+- Short-lived JWT access tokens, separate signed token types for password reset and email verification.
+- Email enumeration protection on the forgot-password endpoint.
+- Per-user authorisation enforced on every CRUD endpoint.
+- Server-side file size and MIME-suffix validation on uploads.
+- CORS restricted to the configured frontend origin.
+
+## Repository layout
+
+```
+StuddyBuddy/
+├── backend/                 FastAPI service
+│   ├── app/
+│   │   ├── core/            security, deps, email helper
+│   │   ├── models/          SQLAlchemy 2 ORM
+│   │   ├── schemas/         Pydantic v2 IO contracts
+│   │   ├── routers/         HTTP endpoints
+│   │   ├── services/        AI service, file extraction, SM-2 scheduler
+│   │   ├── config.py        settings (.env loaded via pydantic-settings)
+│   │   ├── database.py      engine + session
+│   │   └── main.py          app factory + CORS + startup
+│   ├── requirements.txt
+│   └── .env.example
+├── frontend/                React app (Vite)
+│   ├── src/
+│   │   ├── api/             Axios client + per-resource modules
+│   │   ├── components/      Layout, Sidebar, Toast, Spinner, Modal, ProtectedRoute
+│   │   ├── context/         AuthContext
+│   │   ├── pages/           One file per route
+│   │   ├── styles/          Single global CSS design system
+│   │   ├── App.jsx          Router
+│   │   └── main.jsx         Entry point
+│   ├── package.json
+│   ├── vite.config.js       (proxies /api → http://localhost:8000)
+│   └── .env.example
+└── docs/                    
+    ├── ARCHITECTURE.md
+    ├── SETUP.md
+    ├── API.md
+    ├── DATABASE.md
+    ├── SECURITY.md
+    └── UX.md
+```
+
+## Quick start
+
+See [docs/SETUP.md](docs/SETUP.md) for the full walk-through. 
+
+```bash
+# 1. Database
+createdb studybuddy
+createuser studybuddy --pwprompt        
+
+# 2. Backend
+cd backend
+python -m venv .venv 
+# Windows: .venv\Scripts\activate
+source .venv/bin/activate    
+pip install -r requirements.txt
+cp .env.example .env                                 
+uvicorn app.main:app --reload
+
+# 3. Frontend
+cd frontend
+npm install
+npm run dev
+```
+
+Open <http://localhost:5173>. The first thing you'll see is the sign-up screen.
+
+## Documentation
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — high-level diagram, request flow, design decisions.
+- [docs/SETUP.md](docs/SETUP.md) — local install, env vars, running, troubleshooting.
+- [docs/API.md](docs/API.md) — every endpoint, request/response shapes, auth requirements.
+- [docs/DATABASE.md](docs/DATABASE.md) — entity relationship, table-by-table schema.
+- [docs/SECURITY.md](docs/SECURITY.md) — auth model, threat surface, mitigations.
