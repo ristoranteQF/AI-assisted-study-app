@@ -9,6 +9,8 @@ caching to keep latency and cost down.
 
 ## Demo
 
+Live app: https://ai-assisted-study-app.vercel.app
+
 ![StudyBuddy demo](demo.gif)
 
 
