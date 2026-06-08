@@ -3,24 +3,24 @@
 ## Birds-eye view
 
 ```
-┌──────────────────────┐     HTTPS / JSON     ┌────────────────────────┐
-│  React SPA (Vite)    │ ────────────────────▶ │   FastAPI (Uvicorn)    │
-│  - Router            │                       │   - Routers (REST)     │
-│  - AuthContext       │  ◀───── JWT ─────────▶│   - Pydantic schemas   │
-│  - Axios client      │                       │   - Services           │
-│  - Design system     │                       │     · ai_service       │
-└──────────────────────┘                       │     · file_service     │
+┌──────────────────────┐     HTTPS / JSON       ┌────────────────────────┐
+│  React SPA (Vite)    │ <────────────────────> │   FastAPI (Uvicorn)    │
+│  - Router            │                        │   - Routers (REST)     │
+│  - AuthContext       │                        │   - Pydantic schemas   │
+│  - Axios client      │                        │   - Services           │
+│  - Design system     │                        │     · ai_service       │
+└──────────────────────┘                        │     · file_service     │
                                                 │     · spaced_repetition│
-                                                │   - Auth middleware   │
+                                                │   - Auth middleware    │
                                                 └────────┬───────────────┘
                                                          │ SQLAlchemy
                                                          ▼
-                                                ┌────────────────────────┐
+                                                ┌─────────────────────────┐
                                                 │     PostgreSQL          │
                                                 │  users · notes · decks  │
                                                 │  flashcards · quizzes   │
                                                 │  sessions · review_logs │
-                                                └────────────────────────┘
+                                                └─────────────────────────┘
                                                          ▲
                                                          │ HTTPS
                                                 ┌────────┴───────────────┐
