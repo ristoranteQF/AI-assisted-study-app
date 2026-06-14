@@ -11,4 +11,4 @@ cp .env.example .env
 uvicorn app.main:app --reload
 ```
 
-Interactive docs: <http://localhost:8000/docs>
+
